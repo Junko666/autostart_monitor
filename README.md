@@ -1,114 +1,243 @@
-# autostart_monitor
+# README.md - Autostart Monitor  
+### Light Mode (English)  
+![image](https://github.com/user-attachments/assets/46e57805-9cc4-4992-aedd-d755698b5721)
 
+### Dark Mode (German)  
+![image](https://github.com/user-attachments/assets/622daeaa-c577-4195-9401-2695e04dad70)
 
-Download precompiled .exe file:
-https://drive.google.com/file/d/1DGvHrQz69dM82pknP6AnQi7RykHWLReO/view?usp=sharing
+A Windows monitoring tool that detects unauthorized changes to autostart locations. Continuously checks startup folders, registry entries, services and scheduled tasks. Alerts via notifications/sounds and provides direct access to relevant system tools for analysis.
 
+## Table of Contents
+- [Introduction](#introduction)
+- [Features](#features)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Configuration](#configuration)
+- [Translations](#translations)
+- [Developer Notes](#developer-notes)
+- [License](#license)
+- [Contributors](#contributors)
 
-# README.md (English)
+## Introduction
+Autostart Monitor is a security-oriented tool that monitors 12+ Windows autostart locations for unauthorized changes:
+- Startup folders (User/All Users)
+- Registry entries (HKCU/HKLM Run keys)
+- Context menu handlers (Files/Folders/Background)
+- System services (Startup type changes)
+- Scheduled tasks
 
-## Autostart Monitor
+Key capabilities:
+- Real-time monitoring with configurable interval (10-300s)
+- Visual/Sound alerts with actionable dialogs
+- Dark/Light mode with smooth animations
+- German/English language support
+- Persistent configuration
 
-Autostart Monitor is a desktop application designed to monitor and manage the autostart entries on Windows systems. It allows users to keep track of changes in startup folders, registry entries, services, and scheduled tasks. The application provides notifications for any detected changes, ensuring that users are aware of any modifications that could affect system performance or security.
+## Features
+### Core Monitoring
+- **Startup Folders**:  
+  Tracks additions/removals in `%AppData%\Microsoft\Windows\Start Menu\Startup` and system-wide folder.
 
-### Features
+- **Registry Monitoring**:  
+  - HKCU: `Software\Microsoft\Windows\CurrentVersion\Run`  
+  - HKLM: `SOFTWARE\Microsoft\Windows\CurrentVersion\Run`  
+  - Context Menu Handlers (Files/Folders/Background)
 
-- Monitor startup folders, registry entries, services, and scheduled tasks.
-- Notifications via Windows Toast and dialog messages.
-- Customizable settings including scan interval, language, and dark mode.
-- Auto-hide feature to minimize the application after a specified time.
+- **Services**:  
+  Detects changes to service startup types via registry.
 
-### Dependencies
+- **Scheduled Tasks**:  
+  Monitors task additions/removals (basic implementation).
 
-- Python 3.x
-- PyQt6
-- win10toast
-- logging
-- json
-- threading
-- ctypes
-- winsound
-- winreg
+### Alert System
+- **Multi-Channel Notifications**:  
+  Choose between Windows Toasts, modal dialogs or both.
 
-### Installation
+- **System Integration**:  
+  - Alert sound via `winsound`  
+  - Window flashing for background alerts  
+  - Direct links to Regedit/Task Scheduler/Services  
 
-1. Clone the repository or download the source code.
-2. Install the required dependencies using pip:
+- **Actionable Dialogs**:  
+  One-click access to:  
+  - Registry Editor  
+  - Task Scheduler  
+  - Services Console  
+  - Autoruns.exe (auto-downloads if missing)
+
+### UI Features
+- **Dynamic Theme System**:  
+  Smooth color transitions between dark/light modes.
+
+- **Language Support**:  
+  Switch between German/English on-the-fly.
+
+- **Auto-Hide**:  
+  Option to minimize to tray after 20s startup.
+
+- **Persistent Settings**:  
+  Saves configuration to `settings.json`.
+
+## Requirements
+- **OS**: Windows 10/11 (64-bit)
+- **Python**: 3.9+ (tested with 3.11)
+- **Dependencies**:
+  ```bash
+  pip install pyqt6 win10toast pywin32 ctypes
+  ```
+
+## Installation
+1. Clone repository:
    ```bash
-   pip install PyQt6 win10toast
+   git clone https://github.com/Junko666/autostart-monitor.git
+   cd autostart-monitor
    ```
-3. Run the application:
+2. Create virtual environment:
    ```bash
-   python autostart_monitor.py
+   python -m venv venv
+   venv\Scripts\activate
+   ```
+3. Install requirements:
+   ```bash
+   pip install -r requirements.txt
+   ```
+4. Start application:
+   ```bash
+   python main.py
    ```
 
-### Usage
+## Usage
+### Interface Overview
+1. **Monitoring Methods**: Check which autostart locations to monitor
+2. **Notification Channels**: Select alert types (Toasts/Dialogs)
+3. **Settings**:  
+   - Language: DE/EN  
+   - Theme: Dark/Light  
+   - Scan Interval: 10-300 seconds  
+   - Auto-Hide: Minimize after launch
 
-1. Launch the application.
-2. Select the methods you want to monitor (Startup folders, Registry, Services, Scheduled Tasks).
-3. Choose your preferred notification methods (Windows Toast, Dialog).
-4. Set the scan interval and other preferences.
-5. Start monitoring by clicking the "Start Monitoring" button.
+### Basic Workflow
+1. Select monitoring methods (default: all enabled)
+2. Choose notification preferences
+3. Click "Start Monitoring"
+4. On changes:  
+   - Sound alert plays  
+   - Window flashes (if minimized)  
+   - Toast/Dialog shows details  
+   - Buttons open relevant admin tools
 
-### Logging
+### Context Actions
+When a change dialog appears:
+- **Registry Changes**: Opens Regedit at relevant path
+- **Service Changes**: Launches Services Console
+- **Tasks Changes**: Opens Task Scheduler
+- **Autoruns**: Downloads/Runs Sysinternals Autoruns
 
-The application logs all activities and errors to a file named `monitor.log`. This log file can be useful for troubleshooting and understanding the application's behavior.
+## Configuration
+Settings persist in `settings.json`:
+```json
+{
+  "selected_methods": {
+    "startup_folders": true,
+    "registry": true,
+    "registry_hklm_run": true,
+    "context_handlers_star": true,
+    "...": "..."
+  },
+  "notification_methods": {
+    "windows_toast": true,
+    "dialog": true
+  },
+  "auto_start": false,
+  "language": "de",
+  "dark_mode": false,
+  "scan_interval": 60
+}
+```
 
-### License
+### Key Settings
+| Setting Group         | Options                          | Default  |
+|-----------------------|----------------------------------|----------|
+| Monitoring Methods    | 12 toggleable checkboxes         | All ON   |
+| Notifications         | Toast/Dialog                     | Both ON  |
+| Interface             | Language (DE/EN), Dark Mode      | DE, Light|
+| Behavior              | Scan Interval (10-300s), Auto-Hide| 60s, OFF |
 
-This project is licensed under the MIT License. See the LICENSE file for more details.
+## Translations
+### Supported Languages
+- German (de) - Default
+- English (en)
+
+### Add New Language
+1. Extend `update_language()` method in `AutostartMonitorWindow` class
+2. Add translations for all UI elements
+3. Create JSON file for system messages
+4. Update language combo box
+
+## Developer Notes
+### Architecture Highlights
+```mermaid
+graph TD
+    A[Autostart Monitor App] --> B[Logging Module]
+    A --> C[Startup Folders]
+    A --> D[Registry Entries]
+    A --> E[Context Menu Handlers]
+    A --> F[Services]
+    A --> G[Scheduled Tasks]
+    
+    B --> H[Log File]
+    
+    D --> I[HKCU Run]
+    D --> J[HKLM Run]
+    
+    E --> K[ContextMenuHandlers]
+    E --> L[DragDropHandlers]
+    
+    A --> M[Notifications]
+    M --> N[Windows Toast]
+    M --> O[Dialog]
+    
+    A --> P[Settings]
+    P --> Q[Settings File]
+    
+    A --> R[GUI]
+    R --> S[Interface]
+    
+    A --> T[Monitoring Thread]
+    T --> U[Change Detection]
+    U --> V[Notification System]
+```
+
+### Key Components
+| File               | Responsibility                  |
+|--------------------|---------------------------------|
+| `main.py`          | Application entry point         |
+| `AutostartMonitorWindow` | Main UI/PyQt6 logic      |
+| `DEFAULT_SETTINGS` | Configuration defaults          |
+| `compare_*` funcs  | Change detection algorithms     |
+
+### Extension Ideas
+1. **Tray Icon**:  
+   Minimize to tray with monitoring status indicator.
+
+2. **History Logging**:  
+   Save change history to CSV/SQLite.
+
+3. **Network Alerts**:  
+   Send notifications via Email/Telegram API.
+
+4. **Whitelisting**:  
+   Allow users to exclude known-safe entries.
+
+## License
+MIT License - See [LICENSE](LICENSE) file.
+
+## Contributors
+1. [Junko](https://github.com/Junko666) - Development Director
+2. OpenAI GPT-4 - Code Development
+3. DeepSeek-R1-Lite-Preview - Documentation
 
 ---
 
-# README.md (Deutsch)
-
-## Autostart Monitor
-
-Der Autostart Monitor ist eine Desktop-Anwendung, die entwickelt wurde, um die Autostart-Einträge auf Windows-Systemen zu überwachen und zu verwalten. Die Anwendung ermöglicht es Benutzern, Änderungen in den Startup-Ordnern, Registrierungseinträgen, Diensten und geplanten Aufgaben zu verfolgen. Sie bietet Benachrichtigungen für alle erkannten Änderungen, sodass die Benutzer über Modifikationen informiert sind, die die Systemleistung oder -sicherheit beeinträchtigen könnten.
-
-### Funktionen
-
-- Überwachung von Startup-Ordnern, Registrierungseinträgen, Diensten und geplanten Aufgaben.
-- Benachrichtigungen über Windows Toast und Dialognachrichten.
-- Anpassbare Einstellungen, einschließlich Scan-Intervall, Sprache und Dunkelmodus.
-- Auto-Hide-Funktion, um die Anwendung nach einer bestimmten Zeit zu minimieren.
-
-### Abhängigkeiten
-
-- Python 3.x
-- PyQt6
-- win10toast
-- logging
-- json
-- threading
-- ctypes
-- winsound
-- winreg
-
-### Installation
-
-1. Klonen Sie das Repository oder laden Sie den Quellcode herunter.
-2. Installieren Sie die erforderlichen Abhängigkeiten mit pip:
-   ```bash
-   pip install PyQt6 win10toast
-   ```
-3. Führen Sie die Anwendung aus:
-   ```bash
-   python autostart_monitor.py
-   ```
-
-### Verwendung
-
-1. Starten Sie die Anwendung.
-2. Wählen Sie die Methoden aus, die Sie überwachen möchten (Startup-Ordner, Registrierung, Dienste, Geplante Aufgaben).
-3. Wählen Sie Ihre bevorzugten Benachrichtigungsmethoden (Windows Toast, Dialog).
-4. Stellen Sie das Scan-Intervall und andere Präferenzen ein.
-5. Starten Sie die Überwachung, indem Sie auf die Schaltfläche "Überwachung starten" klicken.
-
-### Protokollierung
-
-Die Anwendung protokolliert alle Aktivitäten und Fehler in einer Datei namens `monitor.log`. Diese Protokolldatei kann nützlich sein, um Probleme zu beheben und das Verhalten der Anwendung zu verstehen.
-
-### Lizenz
-
-Dieses Projekt ist unter der MIT-Lizenz lizenziert. Weitere Informationen finden Sie in der LICENSE-Datei.
+**Disclaimer**: This tool interacts with critical system components. Use at your own risk. Always create system restore points before making changes.
