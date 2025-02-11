@@ -205,8 +205,8 @@ MIT License - See [LICENSE](LICENSE) file.
 
 ## Contributors
 1. [Junko](https://github.com/Junko666) - Development Director
-2. OpenAI GPT-4 - Code Development
-3. DeepSeek-R1-Lite-Preview - Documentation
+2. OpenAI o3 Mini High - Code Development
+3. DeepSeek-R1 - Documentation
 
 ---
 
@@ -421,8 +421,8 @@ MIT-Lizenz - Siehe [LICENSE](LICENSE)-Datei.
 
 ## Mitwirkende
 1. [Junko](https://github.com/Junko666) - Entwicklungsleiter
-2. OpenAI GPT-4 - Code-Entwicklung
-3. DeepSeek-R1-Lite-Preview - Dokumentation
+2. OpenAI o3 Mini High - Code-Entwicklung
+3. DeepSeek-R1 - Dokumentation
 
 ---
 
