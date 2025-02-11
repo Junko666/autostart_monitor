@@ -177,37 +177,7 @@ Settings persist in `settings.json`:
 
 ## Developer Notes
 ### Architecture Highlights
-```mermaid
-graph TD
-    A[Autostart Monitor App] --> B[Logging Module]
-    A --> C[Startup Folders]
-    A --> D[Registry Entries]
-    A --> E[Context Menu Handlers]
-    A --> F[Services]
-    A --> G[Scheduled Tasks]
-    
-    B --> H[Log File]
-    
-    D --> I[HKCU Run]
-    D --> J[HKLM Run]
-    
-    E --> K[ContextMenuHandlers]
-    E --> L[DragDropHandlers]
-    
-    A --> M[Notifications]
-    M --> N[Windows Toast]
-    M --> O[Dialog]
-    
-    A --> P[Settings]
-    P --> Q[Settings File]
-    
-    A --> R[GUI]
-    R --> S[Interface]
-    
-    A --> T[Monitoring Thread]
-    T --> U[Change Detection]
-    U --> V[Notification System]
-```
+![image](https://github.com/user-attachments/assets/1c529b72-a07b-481a-85cc-7199f7bf2b41)
 
 ### Key Components
 | File               | Responsibility                  |
@@ -241,3 +211,219 @@ MIT License - See [LICENSE](LICENSE) file.
 ---
 
 **Disclaimer**: This tool interacts with critical system components. Use at your own risk. Always create system restore points before making changes.
+
+
+
+# README.md - Autostart Monitor  
+### Hellmodus (Englisch)  
+![image](https://github.com/user-attachments/assets/46e57805-9cc4-4992-aedd-d755698b5721)
+
+### Dunkelmodus (Deutsch)  
+![image](https://github.com/user-attachments/assets/622daeaa-c577-4195-9401-2695e04dad70)
+
+Ein Windows-Überwachungstool, das unbefugte Änderungen an Autostart-Orten erkennt. Überwacht kontinuierlich Startordner, Registrierungseinträge, Dienste und geplante Aufgaben. Benachrichtigt über Benachrichtigungen/Töne und bietet direkten Zugriff auf relevante Systemtools zur Analyse.
+
+## Inhaltsverzeichnis
+- [Einführung](#einführung)
+- [Funktionen](#funktionen)
+- [Voraussetzungen](#voraussetzungen)
+- [Installation](#installation)
+- [Verwendung](#verwendung)
+- [Konfiguration](#konfiguration)
+- [Übersetzungen](#übersetzungen)
+- [Hinweise für Entwickler](#hinweise-für-entwickler)
+- [Lizenz](#lizenz)
+- [Mitwirkende](#mitwirkende)
+
+## Einführung
+Autostart Monitor ist ein sicherheitsorientiertes Tool, das mehr als 12 Windows-Autostart-Orte auf unbefugte Änderungen überwacht:
+- Startordner (Benutzer/Alle Benutzer)
+- Registrierungseinträge (HKCU/HKLM Run-Schlüssel)
+- Kontextmenü-Handler (Dateien/Ordner/Hintergrund)
+- Systemdienste (Änderungen des Starttyps)
+- Geplante Aufgaben
+
+Wichtige Funktionen:
+- Echtzeit-Überwachung mit konfigurierbarem Intervall (10-300s)
+- Visuelle/Ton-Benachrichtigungen mit aktionsfähigen Dialogen
+- Dunkel/Hell-Modus mit flüssigen Animationen
+- Deutsch/Englisch Sprachunterstützung
+- Persistente Konfiguration
+
+## Funktionen
+### Kernüberwachung
+- **Startordner**:  
+  Verfolgt Hinzufügungen/Entfernungen in `%AppData%\Microsoft\Windows\Start Menu\Startup` und systemweiten Ordnern.
+
+- **Registrierungsüberwachung**:  
+  - HKCU: `Software\Microsoft\Windows\CurrentVersion\Run`  
+  - HKLM: `SOFTWARE\Microsoft\Windows\CurrentVersion\Run`  
+  - Kontextmenü-Handler (Dateien/Ordner/Hintergrund)
+
+- **Dienste**:  
+  Erkennt Änderungen an Dienststarttypen über die Registrierung.
+
+- **Geplante Aufgaben**:  
+  Überwacht das Hinzufügen/Entfernen von Aufgaben (grundlegende Implementierung).
+
+### Benachrichtigungssystem
+- **Multi-Kanal-Benachrichtigungen**:  
+  Wählen Sie zwischen Windows-Toasts, modalen Dialogen oder beidem.
+
+- **Systemintegration**:  
+  - Benachrichtigungston über `winsound`  
+  - Fensterblinken für Hintergrundbenachrichtigungen  
+  - Direkte Links zu Regedit/Taskplaner/Dienste  
+
+- **Aktionsfähige Dialoge**:  
+  Ein-Klick-Zugriff auf:  
+  - Registrierungseditor  
+  - Taskplaner  
+  - Dienstekonsole  
+  - Autoruns.exe (wird automatisch heruntergeladen, falls fehlend)
+
+### UI-Funktionen
+- **Dynamisches Themesystem**:  
+  Flüssige Farbübergänge zwischen Dunkel/Hell-Modi.
+
+- **Sprachunterstützung**:  
+  Wechseln Sie zwischen Deutsch/Englisch im laufenden Betrieb.
+
+- **Automatisches Ausblenden**:  
+  Option, nach 20s Start in das Systray zu minimieren.
+
+- **Persistente Einstellungen**:  
+  Speichert die Konfiguration in `settings.json`.
+
+## Voraussetzungen
+- **Betriebssystem**: Windows 10/11 (64-Bit)
+- **Python**: 3.9+ (getestet mit 3.11)
+- **Abhängigkeiten**:
+  ```bash
+  pip install pyqt6 win10toast pywin32 ctypes
+  ```
+
+## Installation
+1. Repository klonen:
+   ```bash
+   git clone https://github.com/Junko666/autostart-monitor.git
+   cd autostart-monitor
+   ```
+2. Virtuelle Umgebung erstellen:
+   ```bash
+   python -m venv venv
+   venv\Scripts\activate
+   ```
+3. Anforderungen installieren:
+   ```bash
+   pip install -r requirements.txt
+   ```
+4. Anwendung starten:
+   ```bash
+   python main.py
+   ```
+
+## Verwendung
+### Überblick über die Oberfläche
+1. **Überwachungsmethoden**: Wählen Sie, welche Autostart-Orte überwacht werden sollen
+2. **Benachrichtigungskanäle**: Wählen Sie Benachrichtigungstypen (Toasts/Dialoge)
+3. **Einstellungen**:  
+   - Sprache: DE/EN  
+   - Thema: Dunkel/Hell  
+   - Scan-Intervall: 10-300 Sekunden  
+   - Automatisches Ausblenden: Nach dem Start minimieren
+
+### Grundlegender Arbeitsablauf
+1. Wählen Sie Überwachungsmethoden (Standard: alle aktiviert)
+2. Wählen Sie Benachrichtigungseinstellungen
+3. Klicken Sie auf "Überwachung starten"
+4. Bei Änderungen:  
+   - Benachrichtigungston wird abgespielt  
+   - Fenster blinkt (wenn minimiert)  
+   - Toast/Dialog zeigt Details an  
+   - Schaltflächen öffnen relevante Admin-Tools
+
+### Kontextaktionen
+Wenn ein Änderungsdialog erscheint:
+- **Registrierungsänderungen**: Öffnet Regedit am relevanten Pfad
+- **Dienständerungen**: Startet die Dienstekonsole
+- **Aufgabenänderungen**: Öffnet den Taskplaner
+- **Autoruns**: Lädt/Startet Sysinternals Autoruns
+
+## Konfiguration
+Einstellungen werden in `settings.json` gespeichert:
+```json
+{
+  "selected_methods": {
+    "startup_folders": true,
+    "registry": true,
+    "registry_hklm_run": true,
+    "context_handlers_star": true,
+    "...": "..."
+  },
+  "notification_methods": {
+    "windows_toast": true,
+    "dialog": true
+  },
+  "auto_start": false,
+  "language": "de",
+  "dark_mode": false,
+  "scan_interval": 60
+}
+```
+
+### Wichtige Einstellungen
+| Einstellungsgruppe    | Optionen                          | Standard  |
+|-----------------------|----------------------------------|----------|
+| Überwachungsmethoden  | 12 umschaltbare Kontrollkästchen | Alle AN  |
+| Benachrichtigungen    | Toast/Dialog                     | Beide AN |
+| Oberfläche            | Sprache (DE/EN), Dunkelmodus     | DE, Hell |
+| Verhalten             | Scan-Intervall (10-300s), Automatisches Ausblenden| 60s, AUS |
+
+## Übersetzungen
+### Unterstützte Sprachen
+- Deutsch (de) - Standard
+- Englisch (en)
+
+### Neue Sprache hinzufügen
+1. Erweitern Sie die Methode `update_language()` in der Klasse `AutostartMonitorWindow`
+2. Fügen Sie Übersetzungen für alle UI-Elemente hinzu
+3. Erstellen Sie eine JSON-Datei für Systemnachrichten
+4. Aktualisieren Sie das Sprachauswahlmenü
+
+## Hinweise für Entwickler
+### Architektur-Highlights
+![image](https://github.com/user-attachments/assets/1c529b72-a07b-481a-85cc-7199f7bf2b41)
+
+### Wichtige Komponenten
+| Datei               | Verantwortung                  |
+|--------------------|---------------------------------|
+| `main.py`          | Anwendungseinstiegspunkt         |
+| `AutostartMonitorWindow` | Haupt-UI/PyQt6-Logik      |
+| `DEFAULT_SETTINGS` | Standardkonfiguration          |
+| `compare_*` funcs  | Änderungserkennungsalgorithmen     |
+
+### Erweiterungsideen
+1. **Systray-Symbol**:  
+   Minimieren in das Systray mit Überwachungsstatusanzeige.
+
+2. **Verlaufsprotokollierung**:  
+   Speichern des Änderungsverlaufs in CSV/SQLite.
+
+3. **Netzwerkbenachrichtigungen**:  
+   Senden von Benachrichtigungen über E-Mail/Telegramm-API.
+
+4. **Whitelisting**:  
+   Benutzern erlauben, bekannte sichere Einträge auszuschließen.
+
+## Lizenz
+MIT-Lizenz - Siehe [LICENSE](LICENSE)-Datei.
+
+## Mitwirkende
+1. [Junko](https://github.com/Junko666) - Entwicklungsleiter
+2. OpenAI GPT-4 - Code-Entwicklung
+3. DeepSeek-R1-Lite-Preview - Dokumentation
+
+---
+
+**Haftungsausschluss**: Dieses Tool interagiert mit kritischen Systemkomponenten. Verwenden Sie es auf eigenes Risiko. Erstellen Sie immer Systemwiederherstellungspunkte, bevor Sie Änderungen vornehmen.
