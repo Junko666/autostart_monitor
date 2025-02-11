@@ -1,7 +1,12 @@
 @echo off
 
+echo Ermittle Python-Pfad...
+for /f "delims=" %%P in ('where python') do set "PYTHON=%%P"
+echo Gefundener Python-Pfad: %PYTHON%
+
 echo Installiere pyinstaller...
-pip install pyinstaller
+"%PYTHON%" -m pip install --upgrade pip
+"%PYTHON%" -m pip install pyinstaller
 
 if %ERRORLEVEL% NEQ 0 (
    echo Fehler beim Installieren von pyinstaller.
@@ -10,7 +15,7 @@ if %ERRORLEVEL% NEQ 0 (
 )
 
 echo Erstelle ausführbare Datei mit pyinstaller...
-python -m pyinstaller --noconfirm --onefile --windowed --icon "autostart_monitor.ico" "autostart_monitor.py"
+"%PYTHON%" -m pyinstaller --noconfirm --onefile --windowed --icon "autostart_monitor.ico" "autostart_monitor.py"
 
 if %ERRORLEVEL% NEQ 0 (
    echo Fehler bei der Erstellung der ausführbaren Datei.
