@@ -8,7 +8,6 @@ import winsound
 import winreg
 import logging
 import subprocess
-from junk_logger import log_event
 from win10toast import ToastNotifier
 from PyQt6.QtCore import Qt, QTimer, QVariantAnimation, QEasingCurve
 from PyQt6.QtGui import QFont, QColor
@@ -52,7 +51,6 @@ DEFAULT_SETTINGS = {
 
 def log(msg, level="INFO"):
     print(f"{level}: {msg}")
-    log_event(msg, level=level, program_name=__file__)
 
 def show_windows_toast(title: str, message: str, duration: int = 5):
     try:
